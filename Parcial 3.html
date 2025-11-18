@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcial 3</title>
+    <!-- Use a friendly sans-serif font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Parcial 3.css">
+</head>
+<body>
+    <main class="container">
+        <section class="hero">
+            <h1 class="paco">CONCIERTO</h1>
+            <p class="hero-sub">Vendemos boletos aquí</p>
+            <p class="meta">📍 Estado Roberto Duran — 🕐 Martes 18 a las 8:00 A.M.</p>
+        </section>
+<!-- Boletos divididos para que el usuario (usted) pueda comprar diferentes boletos de forma mas facil -->
+        <section class="Boleteria" aria-labelledby="boletos-title">
+            <div class="nini">
+           <h2 id="boletos-title">Boletos disponibles:</h2>
+            </div>
+           <div class="boleto" data-price="50">
+             <p class="tipo">💫 Boleto VIP 💫</p>
+             <p class="price">$50</p>
+             <label for="canti-vip">Cantidad:</label>
+             <select name="canti" id="canti-vip" class="canti">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+             </select>
+             <button class="comprar">Comprar</button>
+           </div>
+<!-- Nomas puse de opcion para comprar hasta 5 boletos porque me dio pereza poner mas
+ Hubiera quedado mejor en un input? tal vez
+ Queria poner un input? Niop -->
+           <div class="boleto" data-price="30">
+             <p class="tipo">💥 Boleto Butacas 💥</p>
+             <p class="price">$30</p>
+             <label for="canti-butacas">Cantidad:</label>
+             <select name="canti" id="canti-butacas" class="canti">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+             </select>
+             <button class="comprar">Comprar</button>
+           </div>
+<!-- Los emojis los puse yo, no me gusta el que pone la IA asi que no sospeche de mi 
+ SOY INOCENTEEEEE -->
+           <div class="boleto" data-price="15">
+             <p class="tipo">🎟️ Boleto General 🎟️</p>
+             <p class="price">$15</p>
+             <label for="canti-general">Cantidad:</label>
+             <select name="canti" id="canti-general" class="canti">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+             </select>
+             <button class="comprar">Comprar</button>
+           </div>
+        </section>
+    </main>
+
+    <script>const botones = document.querySelectorAll(".comprar");
+
+        const totals = {
+            vip: 0,
+            butacas: 0,
+            general: 0,
+            totalBoletos: 0,
+            totalAmount: 0
+        };
+
+        botones.forEach(boton => {
+            boton.addEventListener("click", () => {
+            const tarjeta = boton.closest(".boleto");
+            const tipoBoleto = tarjeta.querySelector(".tipo").textContent.trim();
+            const cantidadSelect = tarjeta.querySelector(".canti");
+            const cantidad = parseInt(cantidadSelect.value, 10) || 1;
+            const precio = parseFloat(tarjeta.dataset.price) || 0;
+            const total = precio * cantidad;
+
+            if (/vip/i.test(tipoBoleto)) {
+                totals.vip += cantidad;
+            } else if (/butacas/i.test(tipoBoleto)) {
+                totals.butacas += cantidad;
+            } else if (/general/i.test(tipoBoleto)) {
+                totals.general += cantidad;
+            }
+
+            totals.totalBoletos += cantidad;
+            totals.totalAmount += total;
+
+
+            window.totalsBoletos = totals;
+
+            alert(
+                `Has comprado ${cantidad} boleto(s) de tipo: ${tipoBoleto}\n` +
+                `Total de esta compra: $${total}\n\n` +
+                `Totales acumulados:\n` +
+                `VIP: ${totals.vip}\n` +
+                `Butacas: ${totals.butacas}\n` +
+                `General: ${totals.general}\n` +
+                `Boletos totales: ${totals.totalBoletos}\n` +
+                `Importe acumulado: $${totals.totalAmount}`
+            );
+            });
+        });</script>
+        <hr class="Pan">
+        <h1>Analisis de compra</h1>
+    <p>Aqui podras ver el analisis de las compras realizadas</p>
+    <section class="Boleteria">
+    <div class="boletos-vendidos">
+        <h2>Vendidos</h2>
+        <p class="totalBoletos" id="totalBoletos"></p>
+        <script>
+            function updateSummary() {
+                const totals = window.totalsBoletos || { vip: 0, butacas: 0, general: 0, totalBoletos: 0, totalAmount: 0 };
+                const totalBoletosEl = document.getElementById('totalBoletos');
+                const totalAmountEl = document.getElementById('totalAmount');
+
+                if (totalBoletosEl) totalBoletosEl.textContent = String(totals.totalBoletos ?? 0);
+                if (totalAmountEl) totalAmountEl.textContent = String(totals.totalAmount ?? 0);
+            }
+
+            window.addEventListener('load', updateSummary);
+
+            document.addEventListener('click', (e) => {
+                if (e.target && e.target.classList && e.target.classList.contains('comprar')) {
+                    setTimeout(updateSummary, 0);
+                }
+            });
+        </script>
+        </script>
+    </div>
+    <div class="recaudado">
+        <h2>Recaudado</h2>
+        <p class="totalAmount" id="totalAmount">0</p>
+        <script>
+            (function(){
+            const el = document.getElementById('totalAmount');
+            function refresh() {
+                const totals = window.totalsBoletos || { totalAmount: 0 };
+                el.textContent = String(totals.totalAmount ?? 0);
+            }
+            refresh();
+            document.addEventListener('click', (e) => {
+                if (e.target && e.target.classList && e.target.classList.contains('comprar')) {
+                setTimeout(refresh, 0); // esperar a que el handler de compra actualice totalsBoletos
+                }
+            });
+            })();
+        </script>
+    </div>
+</section>
+</body>
+</html>
